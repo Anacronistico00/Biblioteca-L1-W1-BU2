@@ -22,5 +22,10 @@ body {
 }
 
 .bookCover {
-    width: 10%
+    width: 150px
+}
+
+.footer {
+    height: 5%;
+    background-color: #ffffff
 }
