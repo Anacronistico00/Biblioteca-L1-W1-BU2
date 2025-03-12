@@ -4,6 +4,7 @@ using Biblioteca_L1_W1_BU2.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Biblioteca_L1_W1_BU2.Migrations
 {
     [DbContext(typeof(BibliotecaEfCoreDbContext))]
-    partial class BibliotecaEfCoreDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250312120929_LoansTAble")]
+    partial class LoansTAble
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -85,7 +88,7 @@ namespace Biblioteca_L1_W1_BU2.Migrations
 
                     b.HasIndex("BookId");
 
-                    b.ToTable("Prestiti");
+                    b.ToTable("Prestito");
                 });
 
             modelBuilder.Entity("Biblioteca_L1_W1_BU2.Models.Prestito", b =>

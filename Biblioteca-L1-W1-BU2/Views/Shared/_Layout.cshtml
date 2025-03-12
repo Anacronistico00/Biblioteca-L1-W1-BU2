@@ -25,6 +25,18 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Book" asp-action="Index">BookList</a>
                         </li>
+                        <div class="dropdown">
+                            <button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                Prestiti
+                            </button>
+                            <div class="dropdown-menu">
+                                <a class="nav-link text-dark" asp-controller="Prestiti" asp-action="Create">Aggiungi</a>
+                                <hr />
+                                <a class="nav-link text-dark" asp-controller="Prestiti" asp-action="Index">In corso</a>
+                                <hr />
+                                <a class="nav-link text-dark" asp-controller="Prestiti" asp-action="Returned">Riconsegnati</a>
+                            </div>
+                        </div>
                     </ul>
                 </div>
             </div>

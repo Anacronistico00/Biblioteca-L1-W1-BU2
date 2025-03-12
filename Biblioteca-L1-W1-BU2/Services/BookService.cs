@@ -100,6 +100,32 @@ namespace Biblioteca_L1_W1_BU2.Services
             return bookDetails;
         }
 
+        public async Task<BookListViewModel> GetBookBySearchAsync(string searched)
+        {
+            try
+            {
+                if (string.IsNullOrWhiteSpace(searched))
+                {
+                    return await GetBooksAsync();
+                }
+
+                var bookList = new BookListViewModel
+                {
+                    Books = await _context.Books
+                        .Where(b => b.Title.Contains(searched) ||
+                                    b.Author.Contains(searched) ||
+                                    b.Genre.Contains(searched))
+                        .ToListAsync()
+                };
+
+                return bookList;
+            }
+            catch
+            {
+                return new BookListViewModel { Books = new List<Book>() };
+            }
+        }
+
         public async Task<EditBookViewModel> GetBookDetailsByIdAsync(Guid id)
         {
             var book = await _context.Books.FirstOrDefaultAsync(b => b.Id == id);
@@ -147,6 +173,35 @@ namespace Biblioteca_L1_W1_BU2.Services
 
             return await SaveAsync();
         }
+        internal async Task UpdateBookAsync(BookDetailsViewModel book)
+        {
+            var bookToUpdate = await _context.Books.FirstOrDefaultAsync(b => b.Id == book.Id);
+            if (bookToUpdate == null)
+            {
+                return;
+            }
+            bookToUpdate.Title = book.Title;
+            bookToUpdate.Author = book.Author;
+            bookToUpdate.Genre = book.Genre;
+            bookToUpdate.Available = book.Available;
+            bookToUpdate.CoverUrl = book.CoverUrl;
+            await SaveAsync();
+        }
+
+        internal async Task UpdateAvailabilityAsync(Book book)
+        {
+            var bookToUpdate = await _context.Books.FirstOrDefaultAsync(b => b.Id == book.Id);
+            if (bookToUpdate == null)
+            {
+                return;
+            }
+            bookToUpdate.Title = book.Title;
+            bookToUpdate.Author = book.Author;
+            bookToUpdate.Genre = book.Genre;
+            bookToUpdate.Available = book.Available;
+            bookToUpdate.CoverUrl = book.CoverUrl;
+            await SaveAsync();
+        }
 
         public async Task<bool> DeleteBookByIdAsync(Guid id)
         {
@@ -158,5 +213,6 @@ namespace Biblioteca_L1_W1_BU2.Services
             _context.Books.Remove(book);
             return await SaveAsync();
         }
+
     }
 }

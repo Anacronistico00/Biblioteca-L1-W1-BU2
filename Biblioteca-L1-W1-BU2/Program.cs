@@ -13,6 +13,7 @@ builder.Services.AddDbContext<BibliotecaEfCoreDbContext>(options =>
     options.UseSqlServer(connectionString));
 
 builder.Services.AddScoped<BookService>();
+builder.Services.AddScoped<LoanService>();
 
 var app = builder.Build();
 
