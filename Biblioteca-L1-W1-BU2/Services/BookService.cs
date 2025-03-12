@@ -14,7 +14,7 @@ namespace Biblioteca_L1_W1_BU2.Services
             _context = context;
         }
 
-        private async Task<bool> SaveAsync()
+        public async Task<bool> SaveAsync()
         {
             try
             {
@@ -174,21 +174,6 @@ namespace Biblioteca_L1_W1_BU2.Services
             return await SaveAsync();
         }
         internal async Task UpdateBookAsync(BookDetailsViewModel book)
-        {
-            var bookToUpdate = await _context.Books.FirstOrDefaultAsync(b => b.Id == book.Id);
-            if (bookToUpdate == null)
-            {
-                return;
-            }
-            bookToUpdate.Title = book.Title;
-            bookToUpdate.Author = book.Author;
-            bookToUpdate.Genre = book.Genre;
-            bookToUpdate.Available = book.Available;
-            bookToUpdate.CoverUrl = book.CoverUrl;
-            await SaveAsync();
-        }
-
-        internal async Task UpdateAvailabilityAsync(Book book)
         {
             var bookToUpdate = await _context.Books.FirstOrDefaultAsync(b => b.Id == book.Id);
             if (bookToUpdate == null)

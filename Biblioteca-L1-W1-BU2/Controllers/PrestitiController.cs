@@ -99,24 +99,28 @@ namespace Biblioteca_L1_W1_BU2.Controllers
             {
                 try
                 {
-                    var oldLoan = await _loanService.GetLoanByIdAsync(id);
+                    var oldBook = await _bookService.GetBookByIdAsync((Guid)TempData["OldBookId"]);
 
-                    if (oldLoan != null && oldLoan.Book != null)
+                    if (oldBook != null && oldBook != null)
                     {
-                        oldLoan.Book.Available = true;
+                        oldBook.Available = true;
 
-                        await _bookService.UpdateAvailabilityAsync(oldLoan.Book);
+                        await _bookService.UpdateBookAsync(oldBook);
 
-                        var newBook = await _bookService.GetBookByIdAsync(prestito.BookId);
-                        if (newBook != null)
+                        var updateLoan = await _loanService.GetLoanByIdAsync(id);
+                        
+                        updateLoan.BookId = prestito.BookId;
+                        updateLoan.Username = prestito.Username;
+                        updateLoan.UserEmail = prestito.UserEmail;
+
+                        var result = await _loanService.SaveAsync();
+                        if (result)
                         {
-                            newBook.Available = false;
-
-                            await _bookService.UpdateBookAsync(newBook);
+                            var updateNewBook = await _bookService.GetBookByIdAsync(updateLoan.BookId);
+                            updateNewBook.Available = false;
+                            await _bookService.UpdateBookAsync(updateNewBook);
                         }
                     }
-
-                    await _loanService.UpdateLoanAsync(prestito);
 
                     return RedirectToAction(nameof(Index));
                 }
@@ -125,6 +129,7 @@ namespace Biblioteca_L1_W1_BU2.Controllers
                     ModelState.AddModelError("", ex.Message);
                 }
             }
+
             var libri = await _bookService.GetBooksAsync();
             ViewBag.BookList = new SelectList(libri.Books.Where(b => b.Available), "Id", "Title", prestito.BookId);
             return View(prestito);

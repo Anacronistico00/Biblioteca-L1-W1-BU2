@@ -3,6 +3,9 @@
 @{
     ViewData["Title"] = "Aggiungi prestito";
     var libri = ViewBag.BookList as SelectList;
+    var oldBookId = Model.Book.Id;
+
+    TempData["OldBookId"] = oldBookId;
 }
 
 <form asp-route="SaveEdit" asp-route-id="@Model.Id" method="post">
