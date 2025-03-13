@@ -76,16 +76,15 @@ namespace Biblioteca_L1_W1_BU2.Controllers
 
             return View(book);
         }
-
-        [HttpPost]
-        public async Task<IActionResult> Edit(EditBookViewModel editBookViewModel)
+        [HttpPost("/edit/save/{oldpath}")]
+        public async Task<IActionResult> Edit(EditBookViewModel editBookViewModel, string oldPath)
         {
             if (!ModelState.IsValid)
             {
                 TempData["Error"] = "Error while saving entity to database";
                 return RedirectToAction("Index");
             }
-            var result = await _bookService.UpdateBookByIdAsync(editBookViewModel);
+            var result = await _bookService.UpdateBookWithPathAsync(editBookViewModel, oldPath);
             if (!result)
             {
                 TempData["Error"] = "Error while saving entity to database";

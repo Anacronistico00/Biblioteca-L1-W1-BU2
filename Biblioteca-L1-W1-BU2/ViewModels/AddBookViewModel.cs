@@ -19,7 +19,8 @@ namespace Biblioteca_L1_W1_BU2.ViewModels
         [Required]
         public required bool Available { get; set; }
 
-        [Required]
-        public required string? CoverUrl { get; set; }
+        public string? CoverUrl { get; set; }
+
+        public IFormFile? CoverPath { get; set; }
     }
 }

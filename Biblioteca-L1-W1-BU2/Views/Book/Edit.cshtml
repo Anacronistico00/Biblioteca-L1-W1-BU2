@@ -4,9 +4,9 @@
     ViewData["Title"] = "Modifica libro";
 }
 
-<h1>Aggiungi un nuovo libro</h1>
+<h1>Modifica libro</h1>
 
-<form asp-controller="Book" asp-action="Edit" method="post">
+<form asp-controller="Book" asp-action="Edit" asp-route-oldPath="@Model.CoverUrl" asp-route-id="@Model.Id" method="post" enctype="multipart/form-data">
     <div class="mb-2">
         <label for="Title" class="form-label">Titolo</label>
         <input type="text" class="form-control" id="Title" asp-for="Title" required>
@@ -20,8 +20,8 @@
         <input type="text" class="form-control" id="Genre" asp-for="Genre" required>
     </div>
     <div class="mb-2">
-        <label for="CoverUrl" class="form-label">URL dell'immagine di copertina</label>
-        <input type="text" class="form-control" id="CoverUrl" asp-for="CoverUrl" required>
+        <label for="CoverPath" class="form-label">Carica una copertina dai file</label>
+        <input type="file" class="form-control" id="CoverPath" name="CoverPath">
     </div>
     <div class="mb-2">
         <label for="Available" class="form-label">Disponibile al prestito?</label>

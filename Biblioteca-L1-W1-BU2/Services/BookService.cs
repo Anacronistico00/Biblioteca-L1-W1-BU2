@@ -1,6 +1,7 @@
 ﻿using Biblioteca_L1_W1_BU2.Data;
 using Biblioteca_L1_W1_BU2.Models;
 using Biblioteca_L1_W1_BU2.ViewModels;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace Biblioteca_L1_W1_BU2.Services
@@ -52,13 +53,23 @@ namespace Biblioteca_L1_W1_BU2.Services
         {
             try
             {
+                var fileName = addBookViewModel.CoverPath.FileName;
+                var path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "Uploads", "Images", fileName);
+
+                await using (var stream = new FileStream(path, FileMode.Create))
+                {
+                    await addBookViewModel.CoverPath.CopyToAsync(stream);
+                }
+
+                var webPath = Path.Combine("Uploads", "Images", fileName);
+
                 var book = new Book()
                 {
                     Title = addBookViewModel.Title,
                     Author = addBookViewModel.Author,
                     Genre = addBookViewModel.Genre,
                     Available = addBookViewModel.Available,
-                    CoverUrl = addBookViewModel.CoverUrl
+                    CoverUrl = webPath
                 };
                 _context.Books.Add(book);
 
@@ -156,9 +167,27 @@ namespace Biblioteca_L1_W1_BU2.Services
             return bookDetails;
         }
 
-        public async Task<bool> UpdateBookByIdAsync(EditBookViewModel edit)
+        [HttpPost]
+        public async Task<bool> UpdateBookWithPathAsync(EditBookViewModel edit, string oldPath)
         {
-            var book = await _context.Books.FirstOrDefaultAsync(b => b.Id == edit.Id);
+            string webPath;
+            if (edit.CoverPath != null)
+            {
+                var fileName = edit.CoverPath.FileName;
+                var path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "Uploads", "Images", fileName);
+                await using (var stream = new FileStream(path, FileMode.Create))
+                {
+                    await edit.CoverPath.CopyToAsync(stream);
+                }
+
+                webPath = Path.Combine("Uploads", "Images", fileName);
+            }
+            else
+            {
+                webPath = oldPath;
+            }
+
+                var book = await _context.Books.FirstOrDefaultAsync(b => b.Id == edit.Id);
 
             if (book == null)
             {
@@ -169,11 +198,11 @@ namespace Biblioteca_L1_W1_BU2.Services
             book.Author = edit.Author;
             book.Genre = edit.Genre;
             book.Available = edit.Available;
-            book.CoverUrl = edit.CoverUrl;
+            book.CoverUrl = webPath;
 
             return await SaveAsync();
         }
-        internal async Task UpdateBookAsync(BookDetailsViewModel book)
+        public async Task UpdateBookAsync(BookDetailsViewModel book)
         {
             var bookToUpdate = await _context.Books.FirstOrDefaultAsync(b => b.Id == book.Id);
             if (bookToUpdate == null)

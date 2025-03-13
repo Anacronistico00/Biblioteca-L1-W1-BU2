@@ -21,8 +21,7 @@ namespace Biblioteca_L1_W1_BU2.Models
 
         public required bool Available { get; set; }
 
-        [Required]
-        public required string? CoverUrl { get; set; }
+        public string? CoverUrl { get; set; }
         
         public virtual ICollection<Prestito> Prestiti { get; set; }
     }
