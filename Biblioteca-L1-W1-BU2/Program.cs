@@ -1,5 +1,6 @@
 using Biblioteca_L1_W1_BU2.Data;
 using Biblioteca_L1_W1_BU2.Services;
+using FluentEmail.MailKitSmtp;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -14,6 +15,18 @@ builder.Services.AddDbContext<BibliotecaEfCoreDbContext>(options =>
 
 builder.Services.AddScoped<BookService>();
 builder.Services.AddScoped<LoanService>();
+builder.Services.AddFluentEmail(builder.Configuration.GetSection("MailSettings").GetValue<string>("FromDefault"))
+    .AddRazorRenderer()
+    .AddMailKitSender(new SmtpClientOptions()
+    {
+        Server = builder.Configuration.GetSection("MailSettings").GetValue<string>("Server"),
+        User = builder.Configuration.GetSection("MailSettings").GetValue<string>("User"),
+        Password = builder.Configuration.GetSection("MailSettings").GetValue<string>("Password"),
+        Port = builder.Configuration.GetSection("MailSettings").GetValue<int>("Port"),
+        UseSsl = builder.Configuration.GetSection("MailSettings").GetValue<bool>("UseSsl"),
+        RequiresAuthentication = builder.Configuration.GetSection("MailSettings").GetValue<bool>("RequiresAuthentication")
+    });
+builder.Services.AddScoped<EmailService>();
 
 var app = builder.Build();
 

@@ -9,11 +9,13 @@ namespace Biblioteca_L1_W1_BU2.Controllers
     {
         private readonly LoanService _loanService;
         private readonly BookService _bookService;
+        private readonly EmailService _emailService;
 
-        public PrestitiController(LoanService loanService, BookService bookService)
+        public PrestitiController(LoanService loanService, BookService bookService, EmailService emailService)
         {
             _loanService = loanService;
             _bookService = bookService;
+            _emailService = emailService;
         }
 
         public async Task<IActionResult> Index()
@@ -62,6 +64,8 @@ namespace Biblioteca_L1_W1_BU2.Controllers
                 try
                 {
                     await _loanService.AddLoanAsync(prestito);
+
+                    await _emailService.SendLoanEmailAsync(prestito);
                     return RedirectToAction(nameof(Index));
                 }
                 catch (InvalidOperationException ex)
@@ -152,6 +156,10 @@ namespace Biblioteca_L1_W1_BU2.Controllers
             try
             {
                 await _loanService.ReturnLoanAsync(id);
+                var loan = await _loanService.GetLoanByIdAsync(id);
+
+                await _emailService.SendReturnEmailAsync(loan);
+
                 return RedirectToAction(nameof(Index));
             }
             catch (Exception ex)
@@ -160,6 +168,16 @@ namespace Biblioteca_L1_W1_BU2.Controllers
                 var prestito = await _loanService.GetLoanByIdAsync(id);
                 return View(prestito);
             }
+        }
+
+        [HttpGet("/prestito/reminder/{id:guid}")]
+        public async Task<IActionResult> SendReminder(Guid id)
+        {
+            var loan = await _loanService.GetLoanByIdAsync(id);
+
+            await _emailService.SendReminderEmailAsync(loan);
+
+            return RedirectToAction(nameof(Details), new { id });
         }
     }
 }
